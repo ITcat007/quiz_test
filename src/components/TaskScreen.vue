@@ -195,6 +195,7 @@
         .task-image{
             grid-column: 1/4;
             grid-row: 5/6;
+            padding-bottom: 52px;
         }
 
         .task-image__container{
