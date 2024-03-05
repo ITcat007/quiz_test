@@ -1,0 +1,7 @@
+{
+    "TaskText":"Which shape shows thirds?",
+    "TaskConditions": "Choose the right answer",
+    "TaskImages": ["../../public/images/a.png", "../../public/images/b.png", "../../public/images/c.png"],
+    "AnswerOptions": ["A", "B", "C"],
+    "CorrectAnswer":"A"
+}
