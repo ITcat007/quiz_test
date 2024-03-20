@@ -1,42 +1,59 @@
 <template>
-    <div class="task-screen">
-        <div class="user-container">
-            <div class="user-column">
-                <div class="user-column__name">Anton</div>
-                <div class="user-column__coins">1000 <img src="../../public/images/coin.png" alt="coin"></div>
+    <div class="task-screen">        
+        <div class="container user-container">
+            <div class="row mb-3">
+                <div class="col-6 col-lg-11"></div>
+                <div class="col-6 col-lg-1 d-flex flex-column align-items-end align-items-lg-start px-0 px-lg-auto user-column">
+                    <div class="ps-2">
+                    <div class="user-column__name">Anton</div>
+                    <div class="user-column__coins">1000 <img src="../../public/images/coin.png" alt="coin"></div>
+                    </div>
+                </div>
             </div>
-            <button class="task-cross btn-accessory">
-                <img src="../../public/images/close_btn.png" alt="cross">
-            </button>
-            <div class="task-condition"><span>{{taskConditions}}</span></div>
-            <button class="task-bulb btn-accessory" @click="showModal">
-                <img src="../../public/images/bulb.png" alt="bulb">
-            </button>
-            <div class="task-question">
-                {{taskQuestion}}
+            <div class="row mb-2">
+                <div class="col px-0">
+                    <button class="task-cross btn-accessory">
+                        <img src="../../public/images/close_btn.png" alt="cross">
+                    </button>
+                </div>
+                <div class="d-none d-sm-block col-sm-10 task-condition"><span>{{$store.getters.jsonData.TaskConditions}}</span></div>
+                <div class="col px-0 text-end">
+                    <button class="task-bulb btn-accessory" @click="showModal">
+                        <img src="../../public/images/bulb.png" alt="bulb">
+                    </button>
+                </div>
             </div>
-            <div class="task-image">
-                <div class="task-image__container">
-                    <div class="task-image__item" v-for="(item, index) in json.TaskImages">
-                        <div class="task-image__img">
-                            <img :src="item" alt="image for task">
-                        </div>
-                        <div class="task-image__option">
-                            {{json.AnswerOptions[index]}}
-                        </div>
+            <div class="row mb-3 d-sm-none">
+                <div class="col-12 task-condition"><span>{{$store.getters.jsonData.TaskConditions}}</span></div>
+            </div>
+            <div class="row">
+                <div class="col-2 col-xl-4"></div>
+                <div class="col-8 col-xl-4 task-question">
+                    {{$store.getters.jsonData.TaskText}}
+                </div>
+                <div class="col-2 col-xl-4"></div>
+            </div>
+            <div class="row row-cols-1 row-cols-sm-3 mx-auto task-image">    
+                <div class="col task-image__item" v-for="(item, index) in $store.getters.jsonData.TaskImages">
+                    <div class="task-image__img">
+                        <img :src="item" alt="image for task">
+                    </div>
+                    <div class="task-image__option">
+                        {{$store.getters.jsonData.AnswerOptions[index]}}
                     </div>
                 </div>
             </div>
         </div>
         <modal-form v-model:show="modalOn"></modal-form>
-        <answer-menu :answerOptions="answerOptions" :correctAnswer="correctAnswer"></answer-menu>
+        <answer-menu></answer-menu>
     </div>
 </template>
 
 <script>
-    import JsonData from "../data.json";
     import AnswerMenu from './AnswerMenu.vue';
     import ModalForm from './ModalForm.vue';
+    import {mapActions} from 'vuex';
+    import {mapGetters} from 'vuex';
 
     export default {
         components: {
@@ -44,28 +61,37 @@
         },
         data(){
             return{
-                taskConditions: JsonData.TaskConditions,
-                taskQuestion: JsonData.TaskText,
-                answerOptions: JsonData.AnswerOptions,
-                correctAnswer: JsonData.CorrectAnswer,
-                json: JsonData,
                 modalOn: false
             }
         },
+        computed: {
+            ...mapGetters(['jsonData'])
+        },
         methods:{
+            ...mapActions(['getJsonData']),
             showModal(){
                 this.modalOn = true;
             }
+        },
+        async mounted(){
+            await this.getJsonData();
         }
     }   
 
 </script>
 
 <style scoped>
+    .row{
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    .container{
+        padding-left: 0;
+        padding-right: 0;
+    }
+
     .user-container{      
-        display: grid;
-        grid-template-columns: 1fr 5fr 1fr;
-        grid-template-rows: 150px 63px 1fr 5fr;
         max-width: 1010px;
         margin: 0 auto;
         background: repeating-linear-gradient(
@@ -78,9 +104,6 @@
     }
 
     .user-column{
-        grid-column: 3/4;
-        grid-row: 1/2;
-        justify-self: end;
         font-size: 2rem;
     }
 
@@ -97,11 +120,6 @@
 
     .user-column__coins img{
         margin-left: 3px;
-    }
-
-    .task-cross{
-        grid-column: 1/2;
-        grid-row: 2/3;
     }
 
     .btn-accessory{
@@ -123,43 +141,22 @@
     }
 
     .task-condition{
-        grid-column: 2/3;
         text-align: center;
-        grid-row: 2/3;
     }
 
     .task-condition span{
         line-height: 2.3;
     }
 
-    .task-bulb{
-        grid-column: 3/4;
-        justify-self: end;
-        grid-row: 2/3;
-    }
-
     .task-question{
-        grid-column: 2/3;
         text-align: center;
-        grid-row: 3/4;
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
 
     .task-image{
-        grid-column: 2/3;
         text-align: center;
-        grid-row: 4/5;
-    }
-
-    .task-image__container{
-        display: grid;
-        grid-template-columns: repeat(3,127px);
-        grid-template-rows: repeat(4, 1fr);
-        justify-content: center;
-    }
-
-    .task-image__item{
-        grid-row: 2/2;
+        max-width: 370px;
+        padding: 175px 0 225px 0;
     }
 
     .task-image__option{
@@ -174,32 +171,18 @@
     }
 
     @media(max-width: 576px){
-        .user-container{
-            grid-template-rows: 1fr 1fr 1fr 1fr 5fr;
+        .task-image{
+            padding: 30px 0 30px 0;
         }
+    }
 
+    @media(max-width: 576px){
         .user-column__name{
             padding-top: 0;
         }
 
-        .task-condition{
-            grid-column: 1/4;
-            grid-row: 3/4;
-        }
         .task-question{
-            grid-column: 1/4;
-            grid-row: 4/5;
             font-size: 1.1rem;
-        }
-
-        .task-image{
-            grid-column: 1/4;
-            grid-row: 5/6;
-            padding-bottom: 52px;
-        }
-
-        .task-image__container{
-            display: block;
         }
     }
 </style>

@@ -1,9 +1,9 @@
 <template>
-    <div class="answer-menu">
-        <div class="answer-menu__grayBg">
-            <div class="answer-menu__container">
-                <div class="answer-menu__inner">    
-                    <button class="answer-menu__answer" v-for="(answer, i) in answerOptions" :class="{selected: isSelected === i}" @click="removeBoxShadow(i)">                            
+    <div class="w-100 mx-auto answer-menu">
+        <div class="position-relative h-100 answer-menu__grayBg">
+            <div class="h-100 mx-auto answer-menu__container">
+                <div class="d-flex position-absolute answer-menu__inner">    
+                    <button class="d-flex flex-column align-items-center justify-content-center position-relative w-100 text-center answer-menu__answer" v-for="(answer, i) in $store.getters.jsonData.AnswerOptions" :class="{selected: isSelected === i}" @click="removeBoxShadow(i)">                            
                         <input type="radio" :value="answer" v-model="checkedAnswer"/>
                         <label>{{answer}}</label>
                     </button>
@@ -15,29 +15,19 @@
 </template>  
   
 <script>
-    export default{ 
-        props: {
-            answerOptions: {
-                type: Array,
-                required: true
-            },
-            correctAnswer: {
-                type: String,
-                required: true
-            }
-        },    
+    export default{  
         data(){
             return{
                 checkedAnswer: 'null',
                 isSelected: false
             }               
-        },      
+        },    
         methods:{
             removeBoxShadow(i){
                 this.isSelected = i;
             },
-            sendAnswer(){                
-                if(this.checkedAnswer === this.correctAnswer){
+            sendAnswer(){              
+                if(this.checkedAnswer === this.$store.getters.jsonData.CorrectAnswer){
                     alert("Correctly!");
                 } else if(this.checkedAnswer === 'null'){
                     alert("Choose the correct option");
@@ -53,22 +43,16 @@
 
 <style scoped>
     .answer-menu{
-        width: 100%;
         max-width: 1295px;
         height: 82px; 
-        margin: 0 auto;
     }
 
     .answer-menu__grayBg{
-        position: relative;
         background-color: rgba(221,221,226,.7);        
-        height: 100%;
     }
 
     .answer-menu__container{
         max-width: 1010px;
-        height: 100%;
-        margin: 0 auto;
         background: repeating-linear-gradient(
             to right,
             #e0c6ca,
@@ -79,25 +63,16 @@
     }
 
     .answer-menu__inner{
-        position: absolute;
         left: 0;
         right: 0;
         z-index: 3;
-        display: flex;
         background-color: transparent;
         padding: 0 27px;
         column-gap: 18px;
     }
 
     .answer-menu__answer{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        text-align: center;
         background-color: rgba(255,255,255,.5);
-        width: 100%;
         height: 47px;
         border: 0;
         margin: 18px 0;
